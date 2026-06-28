@@ -1,73 +1,154 @@
-import React, { useState } from 'react';import React, {useState} from ' React '；
-import ReactFlow, { Background, Controls, MarkerType } from 'reactflow';从‘ ReactFlow ’中导入ReactFlow， {Background, Controls, MarkerType}；
-import 'reactflow/dist/style.css';进口“reactflow / dist / style.css”;
-import { IntroAnimation, Sidebar } from './IntroAndSidebar';从‘./IntroAndSidebar’导入{IntroAnimation， Sidebar}；
-import { PortfolioModal } from './PortfolioModal';从“。/PortfolioModal”中导入{PortfolioModal}；
+npm install reactflow framer-motion lucide-react tailwindcssimport React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
-// 自定义手绘风发光卡片
-const HandDrawnCard = ({ data }: any) => (const HandDrawnCard = ({data}: any) => (
-  div className="w-72 bg-white/80 background -blur-sm p-6 round -2xl shadow-[0_4px_20px_rgba(219,39,119,0.1)] border-2 border-粉色-100]hover:shadow-[0_4px_30px_rgba(219,39,119,0.2)]<div className   类名称="w-72 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_4px_20px_rgba(219,39,119,0.1)] border-2 border-pink-100 hover:shadow-[0_4px_30px_rgba(219,39,119,0.2)] transition-all cursor-pointer">
-    {data.label}</h3>；<h3 className="text-pink-500 font-bold mb-2 flex items-center gap-2">{data.label}</   & lt;h3>
-    p className= " text-sm text-gray-600 leading-relaxed " >{data.content}</   & lt;p>；<p className="text-sm text-gray-600 leading-relaxed">{data.content}</   & lt;p>
-     < / div></div>
-);
+export const IntroAnimation = ({ onComplete }: { onComplete: () => void }) => {
+  const [stage, setStage] = useState(0);
 
-const nodeTypes = { custom: HandDrawnCard };const nodeTypes = {custom: HandDrawnCard}；
+  useEffect(() => {
+    // 五幕式动画时间轴控制
+    setTimeout(() => setStage(1), 1000); // 姓名展示
+    setTimeout(() => setStage(2), 2500); // 标签依次弹出
+    setTimeout(() => setStage(3), 4500); // 缩小移动至Hero位
+    setTimeout(() => {
+      setStage(4);
+      onComplete(); // 通知主界面加载侧边栏和画布
+    }, 5500);
+  }, []);
 
-export default function App() {App() {
-  const [introDone, setIntroDone] = useState(false);const[内向，内向]=使用(虚假);
-  const [modalData, setModalData] = useStateconst [modalData, setModalData] = useState<{isOpen: boolean, category: string}>({isOpen: false, category: "})；<{isOpen: boolean, category: string}>({ isOpen: false, category: '' });
+  return (   回报(
+    <AnimatePresence>   & lt; AnimatePresence>
+      {stage < 4 && (
+        <motion.div 
+          className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[#fdfbf7]"
+          exit={{ opacity: 0, scale: 0.9 }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.h1 
+            initial={{ opacity: 0, scale: 0.5, filter: "blur(10px)" }}
+            animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+            className="text-6xl font-light tracking-widest text-pink-500 mb-8"
+          >
+            毛静颖
+          </motion.h1>
+          
+          {stage >= 2 && (
+            <div className="flex gap-4">
+              {['AIGC复合型人才', '河南区域负责人', '首席AIGC讲师'].map((tag, i) => (
+                <motion.span
+                  key={tag}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.3, type: "spring" }}
+                  className="px-4 py-2 bg-gradient-to-r from-pink-100 to-purple-100 text-pink-600 rounded-full text-sm shadow-sm"className="； font - family：宋体
+                >
+                  {tag}   {标签}
+                </motion.span>   & lt; / motion.span>
+              ))}
+            </div>   < / div>
+          )}
+        </motion.div>   & lt; / motion.div>
+      )}
+    </AnimatePresence>   & lt; / AnimatePresence>
+  );
+};
 
-  // 画布节点（保留所有个人数据）
-  const initialNodes = [
-    { id: 'hero', type: 'custom', position: { x: 400, y: 100 }, data: { label: '🧠 核心简历', content: '毛静颖 | 郑州/武汉/全国 | AIGC应用理解与To B商务拓展经验。' } },
-    { id: 'work1', type: 'custom', position: { x: 100, y: 300 }, data: { label: '💼 UBC联合粲华', content: '河南区域KA负责人，负责郑州、南阳等城市文旅、中医药市场拓展。' } },
-    { id: 'work2', type: 'custom', position: { x: 100, y: 500 }, data: { label: '💼 大象融媒', content: 'AIGC实习生，漫剧制作与培训搭建。' } },
-    // 强制不缩减的完整作品集分类
-    { 
-      id: 'port1', type: 'custom', position: { x: 700, y: 300 }, Id: 'port1‘，类型：’custom'，位置：{x: 700， y: 300}，
-      data: { label: '🎬 大广赛获奖作品精选', content: '点击收听 42 首完整广播音频' } 
-    },
-    { id: 'contact', type: 'custom', position: { x: 700, y: 600 }, data: { label: '📱 联系我', content: '电话: 17539999163\n邮箱: mddnb15637745967@163.com' } },{id: ‘联系人’，类型：‘自定义’，位置：{x: 700， y: 600}，数据：{标签：‘📱某某’，内容：‘:17539999163\n: mddnb15637745967@163.com’}}，
-  ];
+export const Sidebar = ({ show }: { show: boolean }) => {export const Sidebar = ({show}: {show: boolean}) => {
+  const menus = ['核心优势', '教育背景', '工作经历', '专业技能', '项目经历', '获奖荣誉'];
+  
+  return (   回报(
+    <AnimatePresence>   & lt; AnimatePresence>
+      {show && (   {show &；
+        <motion.div   & lt; motion.div
+          initial={{ x: -300, opacity: 0 }}初始值={{x: -300，透明度：0}}
+          animate={{ x: 0, opacity: 1 }}动画={{x: 0，不透明度：1}}
+          transition={{ type: "spring", stiffness: 100, damping: 20 }}过渡={{类型："；弹簧"；，刚度：100，阻尼：20}}
+          className="fixed left-4 top-1/2 -translate-y-1/2 z-40 w-48 bg-white/40 backdrop-blur-md border border-white/60 rounded-2xl p-4 shadow-xl"className="fixed - left-4 - top-1/2 - translatate -1/2 - z- 40w - 48bg -white/ 40backline -blur-md border-white/60 round -2xl p-4 shadow-xl"；
+        >
+          <ul className="space-y-4">< ul className   类名称 = " space-y-4" >
+            {menus.map((menu) => (   {菜单。Map ((menu) => (
+              <li key={menu} className="text-gray-700 hover:text-pink-500 cursor-pointer font-medium transition-colors"><li    {菜单}key={menu} className   类名称="；
+                {menu}   {菜单}
+              </li>   < / li>
+            ))}
+          </ul>   < / ul>
+        </motion.div>   & lt; / motion.div>
+      )}
+    </AnimatePresence>   & lt; / AnimatePresence>
+  );
+};import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';从‘frame -motion’中导入{motion， AnimatePresence}；
 
-  // 修复后的连线逻辑（曲线、粉色描边、指向箭头）
-  const initialEdges = [
-    { id: 'e-hero-work1', source: 'hero', target: 'work1', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 }, markerEnd: { type: MarkerType.ArrowClosed, color: '#fbcfe8' } },{id: 'e-hero-work1‘，来源：’hero‘，目标：’work1‘，动画：true，样式：{stroke: ’#fbcfe8', strokeWidth: 3}, markerEnd: {type: MarkerType。ArrowClosed, color: '#fbcfe8'}}；
-    { id: 'e-work1-work2', source: 'work1', target: 'work2', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
-    { id: 'e-hero-port1', source: 'hero', target: 'port1', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
-    // 修复 Bug：将“联系我”归到获奖作品分支脉络下
-    { id: 'e-port1-contact', source: 'port1', target: 'contact', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
-  ];
+// 模拟整合后的42条大广赛音频数据
+const audioList = [
+  { id: 1, title: '《决策的艺术》', src: '/audios/1.mp3' },
+  // ... 中间穿插其余39条音频
+  { id: 41, title: '《护齿盟主》', src: '/audios/41.mp3' },
+  { id: 42, title: '《滑力研究所》', src: '/audios/42.mp3' },
+];
 
-  const onNodeClick = (_: any, node: any) => {
-    if (node.id === 'port1') setModalData({ isOpen: true, category: '大广赛' });
-    else setModalData({ isOpen: true, category: node.data.label });
-  };
+export const PortfolioModal = ({ isOpen, category, onClose }: any) => {
+  const [currentTrack, setCurrentTrack] = useState(0);
+
+  if (!isOpen) return null;
 
   return (
-    <div className="w-screen h-screen bg-[#fdfbf7] overflow-hidden">
-      {/* 动画拦截层 */}
-      {!introDone && <IntroAnimation onComplete={() => setIntroDone(true)} />}
-      
-      {/* 侧边栏 */}
-      <Sidebar show={introDone} />
+    <AnimatePresence>
+      <motion.div 
+        initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm"
+        onClick={onClose} // 点击遮罩层关闭
+      >
+        <motion.div    & lt; motion.div
+          initial={{ y: 50, scale: 0.95 }} animate={{ y: 0, scale: 1 }}Initial ={{y: 50，比例：0.95}}animate={{y: 0，比例：1}}
+          onClick={(e) => e.stopPropagation()} // 修复遮罩层点击穿透BugonClick={(e) => e.stopPropagation()} // 修复遮罩层点击穿透Bug
+          className="bg-[#fdfbf7] w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden border-2 border-pink-100"className="bg-[# fdffbf7]
+        >
+          <div className="p-6 bg-gradient-to-r from-pink-50 to-white border-b border-pink-100 flex justify-between items-center">< span style   风格 = " font - family：宋体；
+            <h2 className="   类名称text-xl font-bold text-gray-800">
+              {category === '大广赛' ? '🎧 大广赛获奖作品精选' : '⚠️ 作品整理中'}
+            </h2>
+            <button onClick={onClose} className="text-gray-400 hover:text-pink-500">关闭</button>
+          </div>   < / div>
 
-      {/* 画布本体 */}
-      {introDone && (
-        <ReactFlow nodes={initialNodes} edges={initialEdges} nodeTypes={nodeTypes} onNodeClick={onNodeClick} fitView>
-          <Background color="#fce7f3" gap={20} size={2} />
-          {/* 保留小地图 */}
-          <Controls className="fill-pink-500" />
-        </ReactFlow>
-      )}
-
-      {/* 作品集音频弹窗 */}
-      <PortfolioModal 
-        isOpen={modalData.isOpen} 
-        category={modalData.category} 
-        onClose={() => setModalData({ isOpen: false, category: '' })} 
-      />
-    </div>
+          <div className="p-6">
+            {category === '大广赛' ? (
+              <div className="flex flex-col gap-4">
+                {/* 网页内置播放器核心 */}
+                <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                  <h3 className="text-pink-600 font-medium mb-2">正在播放: {audioList[currentTrack].title}</h3>
+                  <audio 
+                    controls 
+                    autoPlay 
+                    src={audioList[currentTrack].src}
+                    onEnded={() => setCurrentTrack((prev) => (prev + 1) % audioList.length)}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between mt-4">
+                    <button onClick={() => setCurrentTrack((prev) => (prev === 0 ? audioList.length - 1 : prev - 1))} className="px-4 py-2 bg-pink-50 text-pink-600 rounded-full text-sm">上一首</button>
+                    <button onClick={() => setCurrentTrack((prev) => (prev + 1) % audioList.length)} className="px-4 py-2 bg-pink-50 text-pink-600 rounded-full text-sm">下一首</button>
+                  </div>
+                </div>   < / div>
+                {/* 曲目列表高亮 */}
+                <ul className="h-64 overflow-y-auto space-y-2 mt-4 pr-2 custom-scrollbar">
+                  {audioList.map((track, idx) => (
+                    <li 
+                      key={track.id}
+                      onClick={() => setCurrentTrack(idx)}
+                      className={`p-3 rounded-xl cursor-pointer transition-all ${currentTrack === idx ? 'bg-pink-100 text-pink-700 font-bold' : 'hover:bg-gray-50 text-gray-600'}`}
+                    >
+                      {idx + 1}. {track.title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : (
+              <div className="py-20 text-center text-gray-500">
+                ✨ {category} 模块的作品正在快马加鞭整理中，敬请期待...
+              </div>
+            )}
+          </div>
+        </motion.div>   & lt; / motion.div>
+      </motion.div>
+    </AnimatePresence>   & lt; / AnimatePresence>
   );
-}
+};
