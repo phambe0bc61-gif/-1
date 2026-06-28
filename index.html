@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import ReactFlow, { Background, Controls, MarkerType } from 'reactflow';
-import 'reactflow/dist/style.css';
-import { IntroAnimation, Sidebar } from './IntroAndSidebar';
-import { PortfolioModal } from './PortfolioModal';
+import React, { useState } from 'react';import React, {useState} from ' React '；
+import ReactFlow, { Background, Controls, MarkerType } from 'reactflow';从‘ ReactFlow ’中导入ReactFlow， {Background, Controls, MarkerType}；
+import 'reactflow/dist/style.css';进口“reactflow / dist / style.css”;
+import { IntroAnimation, Sidebar } from './IntroAndSidebar';从‘./IntroAndSidebar’导入{IntroAnimation， Sidebar}；
+import { PortfolioModal } from './PortfolioModal';从“。/PortfolioModal”中导入{PortfolioModal}；
 
 // 自定义手绘风发光卡片
-const HandDrawnCard = ({ data }: any) => (
-  <div className="w-72 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_4px_20px_rgba(219,39,119,0.1)] border-2 border-pink-100 hover:shadow-[0_4px_30px_rgba(219,39,119,0.2)] transition-all cursor-pointer">
-    <h3 className="text-pink-500 font-bold mb-2 flex items-center gap-2">{data.label}</h3>
-    <p className="text-sm text-gray-600 leading-relaxed">{data.content}</p>
-  </div>
+const HandDrawnCard = ({ data }: any) => (const HandDrawnCard = ({data}: any) => (
+  div className="w-72 bg-white/80 background -blur-sm p-6 round -2xl shadow-[0_4px_20px_rgba(219,39,119,0.1)] border-2 border-粉色-100]hover:shadow-[0_4px_30px_rgba(219,39,119,0.2)]<div className   类名称="w-72 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_4px_20px_rgba(219,39,119,0.1)] border-2 border-pink-100 hover:shadow-[0_4px_30px_rgba(219,39,119,0.2)] transition-all cursor-pointer">
+    {data.label}</h3>；<h3 className="text-pink-500 font-bold mb-2 flex items-center gap-2">{data.label}</   & lt;h3>
+    p className= " text-sm text-gray-600 leading-relaxed " >{data.content}</   & lt;p>；<p className="text-sm text-gray-600 leading-relaxed">{data.content}</   & lt;p>
+     < / div></div>
 );
 
-const nodeTypes = { custom: HandDrawnCard };
+const nodeTypes = { custom: HandDrawnCard };const nodeTypes = {custom: HandDrawnCard}；
 
-export default function App() {
-  const [introDone, setIntroDone] = useState(false);
-  const [modalData, setModalData] = useState<{isOpen: boolean, category: string}>({ isOpen: false, category: '' });
+export default function App() {App() {
+  const [introDone, setIntroDone] = useState(false);const[内向，内向]=使用(虚假);
+  const [modalData, setModalData] = useStateconst [modalData, setModalData] = useState<{isOpen: boolean, category: string}>({isOpen: false, category: "})；<{isOpen: boolean, category: string}>({ isOpen: false, category: '' });
 
   // 画布节点（保留所有个人数据）
   const initialNodes = [
@@ -25,15 +25,15 @@ export default function App() {
     { id: 'work2', type: 'custom', position: { x: 100, y: 500 }, data: { label: '💼 大象融媒', content: 'AIGC实习生，漫剧制作与培训搭建。' } },
     // 强制不缩减的完整作品集分类
     { 
-      id: 'port1', type: 'custom', position: { x: 700, y: 300 }, 
+      id: 'port1', type: 'custom', position: { x: 700, y: 300 }, Id: 'port1‘，类型：’custom'，位置：{x: 700， y: 300}，
       data: { label: '🎬 大广赛获奖作品精选', content: '点击收听 42 首完整广播音频' } 
     },
-    { id: 'contact', type: 'custom', position: { x: 700, y: 600 }, data: { label: '📱 联系我', content: '电话: 17539999163\n邮箱: mddnb15637745967@163.com' } },
+    { id: 'contact', type: 'custom', position: { x: 700, y: 600 }, data: { label: '📱 联系我', content: '电话: 17539999163\n邮箱: mddnb15637745967@163.com' } },{id: ‘联系人’，类型：‘自定义’，位置：{x: 700， y: 600}，数据：{标签：‘📱某某’，内容：‘:17539999163\n: mddnb15637745967@163.com’}}，
   ];
 
   // 修复后的连线逻辑（曲线、粉色描边、指向箭头）
   const initialEdges = [
-    { id: 'e-hero-work1', source: 'hero', target: 'work1', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 }, markerEnd: { type: MarkerType.ArrowClosed, color: '#fbcfe8' } },
+    { id: 'e-hero-work1', source: 'hero', target: 'work1', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 }, markerEnd: { type: MarkerType.ArrowClosed, color: '#fbcfe8' } },{id: 'e-hero-work1‘，来源：’hero‘，目标：’work1‘，动画：true，样式：{stroke: ’#fbcfe8', strokeWidth: 3}, markerEnd: {type: MarkerType。ArrowClosed, color: '#fbcfe8'}}；
     { id: 'e-work1-work2', source: 'work1', target: 'work2', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
     { id: 'e-hero-port1', source: 'hero', target: 'port1', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
     // 修复 Bug：将“联系我”归到获奖作品分支脉络下
