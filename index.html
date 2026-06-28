@@ -1,189 +1,73 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>毛静颖 - 个人简历作品集</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        /* 淡雅的米色/灰色渐变背景 */
-        body {
-            background: linear-gradient(135deg, #fdfbf7 0%, #f3f4f6 100%);
-            font-family: 'Helvetica Neue', 'PingFang SC', 'Microsoft YaHei', sans-serif;
-            color: #374151;
-            line-height: 1.6;
-        }
-        /* 卡片高贵极简风格 */
-        .glass-card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(229, 231, 235, 0.8);
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.04);
-            padding: 30px;
-            transition: all 0.3s ease;
-        }
-        .glass-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
-        }
-        .highlight-title {
-            color: #db2777; /* 优雅的粉紫红色 */
-            font-weight: 600;
-            font-size: 1.25rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-        }
-        .skill-tag {
-            background: #fdf2f8;
-            color: #be185d;
-            padding: 6px 14px;
-            border-radius: 999px;
-            font-size: 0.875rem;
-            display: inline-block;
-            margin: 4px 4px 4px 0;
-            border: 1px solid #fbcfe8;
-        }
-    </style>
-</head>
-<body class="min-h-screen p-4 md:p-12">
+import React, { useState } from 'react';
+import ReactFlow, { Background, Controls, MarkerType } from 'reactflow';
+import 'reactflow/dist/style.css';
+import { IntroAnimation, Sidebar } from './IntroAndSidebar';
+import { PortfolioModal } from './PortfolioModal';
 
-    <div class="max-w-6xl mx-auto">
-        
-        <!-- 头部信息 -->
-        <header class="text-center mb-12 glass-card">
-            <h1 class="text-4xl md:text-5xl font-light text-gray-900 tracking-widest mb-4">毛静颖</h1>
-            <p class="text-xl text-gray-600 font-medium tracking-wide mb-6">AI商务 / KA方向</p>
-            <div class="flex flex-wrap justify-center gap-6 text-sm text-gray-500">
-                <span class="flex items-center gap-1">📍 郑州 / 武汉 / 全国</span>
-                <span class="flex items-center gap-1">📞 17539999163</span>
-                <span class="flex items-center gap-1">✉️ mddnb15637745967@163.com</span>
-            </div>
-        </header>
+// 自定义手绘风发光卡片
+const HandDrawnCard = ({ data }: any) => (
+  <div className="w-72 bg-white/80 backdrop-blur-sm p-6 rounded-2xl shadow-[0_4px_20px_rgba(219,39,119,0.1)] border-2 border-pink-100 hover:shadow-[0_4px_30px_rgba(219,39,119,0.2)] transition-all cursor-pointer">
+    <h3 className="text-pink-500 font-bold mb-2 flex items-center gap-2">{data.label}</h3>
+    <p className="text-sm text-gray-600 leading-relaxed">{data.content}</p>
+  </div>
+);
 
-        <!-- 主体两列排版 -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            
-            <!-- 左侧列：意向、总结、教育、技能 -->
-            <div class="space-y-8 md:col-span-1">
-                
-                <div class="glass-card">
-                    <h2 class="highlight-title">🎯 求职意向</h2>
-                    <p class="text-gray-700 font-medium">AI商务 / KA客户经理 / AI解决方案拓展 / 区域业务拓展</p>
-                </div>
+const nodeTypes = { custom: HandDrawnCard };
 
-                <div class="glass-card">
-                    <h2 class="highlight-title">🧠 个人总结</h2>
-                    <p class="text-gray-600 text-sm leading-relaxed">
-                        具备AIGC应用理解能力与To B商务拓展经验，曾负责河南区域市场客户拓展与校企合作推进，覆盖文旅、中医药、酵素健康等行业场景。具备AI课程交付能力与企业培训经验，能够在AI产品推广、客户沟通及行业落地中承担综合角色。
-                    </p>
-                </div>
+export default function App() {
+  const [introDone, setIntroDone] = useState(false);
+  const [modalData, setModalData] = useState<{isOpen: boolean, category: string}>({ isOpen: false, category: '' });
 
-                <div class="glass-card">
-                    <h2 class="highlight-title">🎓 教育背景</h2>
-                    <p class="text-gray-800 font-semibold">郑州工程技术学院</p>
-                    <p class="text-gray-600 text-sm mt-1">播音与主持艺术｜本科（在读）</p>
-                </div>
+  // 画布节点（保留所有个人数据）
+  const initialNodes = [
+    { id: 'hero', type: 'custom', position: { x: 400, y: 100 }, data: { label: '🧠 核心简历', content: '毛静颖 | 郑州/武汉/全国 | AIGC应用理解与To B商务拓展经验。' } },
+    { id: 'work1', type: 'custom', position: { x: 100, y: 300 }, data: { label: '💼 UBC联合粲华', content: '河南区域KA负责人，负责郑州、南阳等城市文旅、中医药市场拓展。' } },
+    { id: 'work2', type: 'custom', position: { x: 100, y: 500 }, data: { label: '💼 大象融媒', content: 'AIGC实习生，漫剧制作与培训搭建。' } },
+    // 强制不缩减的完整作品集分类
+    { 
+      id: 'port1', type: 'custom', position: { x: 700, y: 300 }, 
+      data: { label: '🎬 大广赛获奖作品精选', content: '点击收听 42 首完整广播音频' } 
+    },
+    { id: 'contact', type: 'custom', position: { x: 700, y: 600 }, data: { label: '📱 联系我', content: '电话: 17539999163\n邮箱: mddnb15637745967@163.com' } },
+  ];
 
-                <div class="glass-card">
-                    <h2 class="highlight-title">⚙️ 专业技能</h2>
-                    <div class="mt-2">
-                        <span class="skill-tag">AIGC工具应用 (文生图/视频)</span>
-                        <span class="skill-tag">AI课程设计与教学</span>
-                        <span class="skill-tag">To B客户沟通</span>
-                        <span class="skill-tag">区域市场拓展</span>
-                        <span class="skill-tag">校企合作推进</span>
-                        <span class="skill-tag">PPT设计与表达</span>
-                        <span class="skill-tag">短视频制作</span>
-                    </div>
-                </div>
-            </div>
+  // 修复后的连线逻辑（曲线、粉色描边、指向箭头）
+  const initialEdges = [
+    { id: 'e-hero-work1', source: 'hero', target: 'work1', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 }, markerEnd: { type: MarkerType.ArrowClosed, color: '#fbcfe8' } },
+    { id: 'e-work1-work2', source: 'work1', target: 'work2', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
+    { id: 'e-hero-port1', source: 'hero', target: 'port1', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
+    // 修复 Bug：将“联系我”归到获奖作品分支脉络下
+    { id: 'e-port1-contact', source: 'port1', target: 'contact', animated: true, style: { stroke: '#fbcfe8', strokeWidth: 3 } },
+  ];
 
-            <!-- 右侧列：工作与项目经历 -->
-            <div class="space-y-8 md:col-span-2">
-                
-                <div class="glass-card">
-                    <h2 class="highlight-title">💼 核心经历</h2>
-                    
-                    <!-- 经历一 -->
-                    <div class="mb-8 border-b border-gray-100 pb-6">
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-800">UBC联合粲华</h3>
-                            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">2025.12 – 2026.06</span>
-                        </div>
-                        <p class="text-pink-600 text-sm font-medium mb-3">河南区域KA负责人</p>
-                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2 ml-1">
-                            <li>负责河南区域市场拓展与客户对接，覆盖郑州、南阳、洛阳、安阳等城市</li>
-                            <li>累计拜访企业 5–10家，涉及文旅、健康产业、中医药、酒店等行业</li>
-                            <li>推动校企合作沟通机制搭建，通过教师中介完成高校合作推进（郑州工程技术学院为主要合作点）</li>
-                            <li>对接恒利康集团等企业，就酵素健康产品AI内容宣传与数字化营销达成初步合作意向</li>
-                            <li>与南阳市中医药行业相关协会进行交流，探讨AI在产品宣传与营销转化中的应用价值</li>
-                            <li>在区域市场内推动AI应用认知普及，形成企业侧初步需求转化路径</li>
-                        </ul>
-                    </div>
+  const onNodeClick = (_: any, node: any) => {
+    if (node.id === 'port1') setModalData({ isOpen: true, category: '大广赛' });
+    else setModalData({ isOpen: true, category: node.data.label });
+  };
 
-                    <!-- 经历二 -->
-                    <div class="mb-8 border-b border-gray-100 pb-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-1">AI课程与企业培训</h3>
-                        <p class="text-pink-600 text-sm font-medium mb-3">内部讲师角色</p>
-                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2 ml-1">
-                            <li>独立设计并讲授AIGC应用课程（AI导演思维方向）</li>
-                            <li>累计授课约10场，单场参与人数5–60人不等</li>
-                            <li>课程内容覆盖AIGC内容生成、AI视频应用及基础应用思维训练</li>
-                            <li>负责课程PPT设计与教学结构搭建</li>
-                            <li>在校企合作场景中承担AI基础认知普及与引流课程交付</li>
-                        </ul>
-                    </div>
+  return (
+    <div className="w-screen h-screen bg-[#fdfbf7] overflow-hidden">
+      {/* 动画拦截层 */}
+      {!introDone && <IntroAnimation onComplete={() => setIntroDone(true)} />}
+      
+      {/* 侧边栏 */}
+      <Sidebar show={introDone} />
 
-                    <!-- 经历三 -->
-                    <div>
-                        <div class="flex justify-between items-start mb-2">
-                            <h3 class="text-lg font-bold text-gray-800">大象融媒</h3>
-                            <span class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">2025.11 – 2026.01</span>
-                        </div>
-                        <p class="text-pink-600 text-sm font-medium mb-3">AIGC实习生 / AI内容培训支持</p>
-                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2 ml-1">
-                            <li>参与AI漫剧内容制作与培训体系搭建</li>
-                            <li>负责AIGC工具实操教学支持与课程执行</li>
-                            <li>参与商业级样片制作流程</li>
-                            <li>协助优化AI内容生产流程与教学结构</li>
-                        </ul>
-                    </div>
-                </div>
+      {/* 画布本体 */}
+      {introDone && (
+        <ReactFlow nodes={initialNodes} edges={initialEdges} nodeTypes={nodeTypes} onNodeClick={onNodeClick} fitView>
+          <Background color="#fce7f3" gap={20} size={2} />
+          {/* 保留小地图 */}
+          <Controls className="fill-pink-500" />
+        </ReactFlow>
+      )}
 
-                <div class="glass-card">
-                    <h2 class="highlight-title">📍 AIGC及项目实践</h2>
-                    
-                    <!-- 项目一 -->
-                    <div class="mb-6 border-b border-gray-100 pb-6">
-                        <h3 class="text-lg font-bold text-gray-800 mb-1">AIGC短剧账号运营</h3>
-                        <p class="text-pink-600 text-sm font-medium mb-3">个人项目</p>
-                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2 ml-1">
-                            <li>独立进行AIGC内容制作与账号运营</li>
-                            <li>单条内容最高播放量约8000+</li>
-                            <li>完成多条AI短剧内容创作与发布（当前阶段：内容迭代中）</li>
-                        </ul>
-                    </div>
-
-                    <!-- 项目二 -->
-                    <div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-1">全国大学生广告艺术大赛</h3>
-                        <p class="text-pink-600 text-sm font-medium mb-3">全赛道参与项目负责人</p>
-                        <ul class="list-disc list-inside text-sm text-gray-600 space-y-2 ml-1">
-                            <li>独立完成多项作品设计与制作</li>
-                            <li>形成完整AIGC内容创作经验闭环</li>
-                        </ul>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-        
-        <div class="text-center mt-12 text-sm text-gray-400">
-            <p>Designed with elegant & minimal style</p>
-        </div>
+      {/* 作品集音频弹窗 */}
+      <PortfolioModal 
+        isOpen={modalData.isOpen} 
+        category={modalData.category} 
+        onClose={() => setModalData({ isOpen: false, category: '' })} 
+      />
     </div>
-
-</body>
-</html>
+  );
+}
