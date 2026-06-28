@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 背景与整体风格 */
+        body { background: #fdfbf7; font-family: 'PingFang SC', sans-serif; }
+        .card { 
+            background: white; 
+            border: 1px solid #e5e7eb; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); }
+        /* 手绘连线模拟 */
+        .line { stroke: #d1d5db; stroke-width: 2; fill: none; stroke-dasharray: 4; }
+    </style>
+</head>
+<body class="p-10">
+    <h1 class="text-3xl font-light mb-10 text-gray-800">毛静颖 · 个人作品集</h1>
+    
+    <!-- 画布区域 -->
+    <div class="relative w-full h-[800px] flex gap-10">
+        <!-- 求职意向 -->
+        <div class="card w-64 p-5">
+            <h2 class="text-pink-400 font-bold mb-2">🎯 求职意向</h2>
+            <p class="text-sm text-gray-600">AI商务 / KA客户经理 / AI解决方案拓展 / 区域业务拓展</p>
+        </div>
+
+        <!-- 个人总结 -->
+        <div class="card w-64 p-5">
+            <h2 class="text-pink-400 font-bold mb-2">🧠 个人总结</h2>
+            <p class="text-xs text-gray-600 leading-relaxed">具备AIGC应用理解能力与To B商务拓展经验，负责河南区域市场拓展与校企合作...</p>
+        </div>
+
+        <!-- 核心经历 (合并显示) -->
+        <div class="card w-80 p-5">
+            <h2 class="text-pink-400 font-bold mb-2">💼 核心经历</h2>
+            <ul class="text-xs text-gray-600 space-y-2">
+                <li><strong>UBC联合粲华：</strong>区域KA负责人，推动多行业市场拓展。</li>
+                <li><strong>大象融媒：</strong>AIGC实习生，参与漫剧制作与培训搭建。</li>
+                <li><strong>个人项目：</strong>AIGC短剧运营，单条播放量8000+。</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 您可以将上述代码中的卡片根据需要调整位置，实现那种“画布”感 -->
+    <p class="mt-10 text-gray-400 text-sm italic">提示：将此代码保存为 index.html 即可在浏览器打开，它是完全属于您的私有网页。</p>
+</body>
+</html>
